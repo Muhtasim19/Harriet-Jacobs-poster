@@ -1,4 +1,4 @@
-/* General styles (existing) */
+/* General styles (existing - no changes needed here unless you want to adjust default view) */
 body {
   font-family: Arial, sans-serif;
   background: #f9f6f2;
@@ -92,6 +92,7 @@ ul {
   body {
     background: none;
     padding: 0;
+    margin: 0; /* Ensure no default body margin */
   }
 
   .container {
@@ -100,60 +101,98 @@ ul {
     padding: 0;
   }
 
-  /* Force landscape orientation */
+  /* Force landscape orientation and set margins for print pages */
   @page {
     size: landscape;
-    margin: 1cm; /* Adjust margins as needed */
+    margin: 1cm; /* Adjust margins as needed. Consider if a smaller margin is needed. */
   }
 
-  /* Arrange content for two pages */
-  body {
-    display: flex;
-    flex-direction: column; /* Stack content vertically for print separation */
+  /* --- Page Management --- */
+
+  /* Hide elements by default unless they are on their designated print page */
+  body > *:not(.content-page):not(.image-page) {
+    display: none !important; /* Hide anything not explicitly part of a print page */
+  }
+
+  .content-page, .image-page {
+    width: 100vw; /* Attempt to make them full viewport width */
+    height: 100vh; /* Attempt to make them full viewport height */
+    overflow: hidden; /* Crucial: hide anything that overflows the defined height/width */
+    box-sizing: border-box; /* Include padding/border in the width/height */
+    padding: 1cm; /* Apply padding here instead of body margin, so it's part of the element's size */
   }
 
   .content-page {
     page-break-after: always; /* Force a page break after the content */
+    display: flex; /* Use flexbox for content to help distribution */
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space between sections */
   }
 
   .image-page {
     page-break-before: always; /* Force a page break before the image */
-    display: flex; /* Use flexbox to center image if needed */
+    display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Make image page full height to help centering */
   }
 
-  /* Ensure image fills more space on its own page */
-  .image img {
-    max-width: 80%; /* Increase image size for print */
-    height: auto;
-    width: auto; /* Override fixed width */
+  /* Ensure the main container in the content page scales correctly */
+  .content-page .container {
+    padding: 0; /* Remove container padding as page padding is applied */
+    width: 100%; /* Allow inner container to take full available width */
+    height: 100%; /* Allow inner container to take full available height */
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Hide image on the first page, and text on the second */
-  .image {
-    display: none; /* Hide image by default */
-  }
-  .image-page .image {
-    display: block; /* Show image only on the image page */
-  }
-  .content-page .image {
-    display: none; /* Explicitly hide image on content page */
-  }
-
-  /* Adjust font sizes for print if necessary */
+  /* Adjust spacing and font sizes for print to fit */
   h1 {
-    font-size: 36px;
+    font-size: 30px; /* Slightly reduce if needed */
+    margin-bottom: 5px; /* Reduce margin */
   }
   h2 {
-    font-size: 28px;
+    font-size: 22px; /* Slightly reduce if needed */
+    margin-bottom: 20px; /* Reduce margin */
+  }
+  .section {
+    margin-bottom: 10px; /* Reduce section margin */
   }
   .section-title {
-    font-size: 24px;
+    font-size: 18px; /* Keep consistent or slightly reduce */
+    padding: 8px; /* Slightly reduce padding */
+    margin-bottom: 5px; /* Reduce margin */
   }
-  ul, p {
-    font-size: 16px;
-    line-height: 1.5;
+  ul {
+    padding-left: 15px; /* Slightly reduce padding */
+    margin-bottom: 5px; /* Reduce margin */
+  }
+  li, p {
+    font-size: 13px; /* IMPORTANT: Adjust this to ensure all text fits. Test different values. */
+    line-height: 1.3; /* Adjust line height for denser text if needed */
+    margin-bottom: 3px; /* Reduce paragraph/list item margin */
+  }
+  .quote {
+    font-size: 13px; /* Keep consistent with body text */
+    margin-top: 10px;
+  }
+  .two-column {
+    gap: 10px; /* Reduce gap between columns */
+    flex: 1; /* Allow columns to grow and take available space */
+    height: 100%; /* Ensure flex container takes full height */
+  }
+  .column {
+    min-width: unset; /* Remove min-width for print to allow more flexible wrapping */
+    height: 100%; /* Allow columns to take full height in flex container */
+    overflow-y: auto; /* Add scrollbar if content is too long, but ideally we'll size to fit */
+  }
+
+
+  /* Image adjustments for the image-page */
+  .image img {
+    max-width: 90%; /* Allow image to be larger on its own page */
+    max-height: 90vh; /* Ensure image doesn't exceed page height */
+    width: auto;
+    height: auto;
+    object-fit: contain; /* Ensure the image fits within the bounds without cropping */
   }
 }
