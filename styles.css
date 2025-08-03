@@ -1,3 +1,4 @@
+/* General styles (existing) */
 body {
   font-family: Arial, sans-serif;
   background: #f9f6f2;
@@ -11,7 +12,7 @@ body {
   margin: 0 auto;
   background: #fff;
   padding: 30px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -83,4 +84,76 @@ ul {
 
 .bold {
   font-weight: bold;
+}
+
+/* --- Print Styles --- */
+@media print {
+  /* Hide background and box-shadow for cleaner print */
+  body {
+    background: none;
+    padding: 0;
+  }
+
+  .container {
+    box-shadow: none;
+    max-width: 100%; /* Allow container to take full width for print */
+    padding: 0;
+  }
+
+  /* Force landscape orientation */
+  @page {
+    size: landscape;
+    margin: 1cm; /* Adjust margins as needed */
+  }
+
+  /* Arrange content for two pages */
+  body {
+    display: flex;
+    flex-direction: column; /* Stack content vertically for print separation */
+  }
+
+  .content-page {
+    page-break-after: always; /* Force a page break after the content */
+  }
+
+  .image-page {
+    page-break-before: always; /* Force a page break before the image */
+    display: flex; /* Use flexbox to center image if needed */
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Make image page full height to help centering */
+  }
+
+  /* Ensure image fills more space on its own page */
+  .image img {
+    max-width: 80%; /* Increase image size for print */
+    height: auto;
+    width: auto; /* Override fixed width */
+  }
+
+  /* Hide image on the first page, and text on the second */
+  .image {
+    display: none; /* Hide image by default */
+  }
+  .image-page .image {
+    display: block; /* Show image only on the image page */
+  }
+  .content-page .image {
+    display: none; /* Explicitly hide image on content page */
+  }
+
+  /* Adjust font sizes for print if necessary */
+  h1 {
+    font-size: 36px;
+  }
+  h2 {
+    font-size: 28px;
+  }
+  .section-title {
+    font-size: 24px;
+  }
+  ul, p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
 }
